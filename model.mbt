@@ -123,3 +123,21 @@ pub(all) struct SegmentPlan {
   valid : Bool
   message : String
 } derive(Debug, Eq)
+
+///|
+/// Aggregate evidence from cutting a journal at every byte position.
+pub(all) struct CrashSweepReport {
+  cuts_checked : Int
+  exact_prefixes : Int
+  unsafe_replays : Int
+  passed : Bool
+} derive(Debug, Eq)
+
+///|
+/// Aggregate evidence from flipping every individual bit in a byte stream.
+pub(all) struct CorruptionSweepReport {
+  bits_checked : Int
+  corruptions_detected : Int
+  undetected : Int
+  passed : Bool
+} derive(Debug, Eq)
