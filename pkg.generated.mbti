@@ -1,0 +1,174 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "Sxy11112/moonjournalkit"
+
+import {
+  "moonbitlang/core/debug",
+}
+
+// Values
+pub const JOURNAL_HEADER_SIZE : Int = 24
+
+pub const JOURNAL_VERSION : Byte = 1
+
+pub fn build_recovery_plan(Array[JournalRecord], max_key? : Int) -> RecoveryPlan
+
+pub fn crc32c(BytesView) -> UInt
+
+pub fn crc32c_extend(UInt, BytesView) -> UInt
+
+pub fn decode_mutation(JournalRecord, max_key? : Int) -> MutationDecode
+
+pub fn decode_record(BytesView, offset? : Int, max_payload? : Int) -> DecodeResult
+
+pub fn encode_checkpoint_payload(UInt) -> Bytes
+
+pub fn encode_delete_payload(BytesView) -> Bytes
+
+pub fn encode_put_payload(BytesView, BytesView) -> Bytes
+
+pub fn encode_record(JournalRecord) -> Bytes
+
+pub fn encode_records(Array[JournalRecord]) -> Bytes
+
+pub fn plan_segments(Array[JournalRecord], Int, Int, first_id? : UInt) -> SegmentPlan
+
+pub fn record_kind_name(RecordKind) -> String
+
+pub fn recovery_segment_index(Array[SegmentMeta], UInt) -> Int
+
+pub fn scan_journal(BytesView, strict_sequence? : Bool, max_payload? : Int, max_records? : Int) -> ScanResult
+
+pub fn sweep_crash_cuts(Array[JournalRecord]) -> CrashSweepReport
+
+pub fn sweep_single_bit_corruption(Array[JournalRecord]) -> CorruptionSweepReport
+
+pub fn validate_segment_chain(Array[SegmentMeta]) -> Bool
+
+// Errors
+
+// Types and methods
+pub(all) struct CorruptionSweepReport {
+  bits_checked : Int
+  corruptions_detected : Int
+  undetected : Int
+  passed : Bool
+} derive(Eq, @debug.Debug)
+pub fn CorruptionSweepReport::to_json(Self) -> String
+
+pub(all) struct CrashSweepReport {
+  cuts_checked : Int
+  exact_prefixes : Int
+  unsafe_replays : Int
+  passed : Bool
+} derive(Eq, @debug.Debug)
+pub fn CrashSweepReport::to_json(Self) -> String
+
+pub(all) struct DecodeResult {
+  status : DecodeStatus
+  record : JournalRecord?
+  next_offset : Int
+  message : String
+} derive(Eq, @debug.Debug)
+
+pub(all) enum DecodeStatus {
+  Decoded
+  NeedMoreData
+  Corrupt
+  Unsupported
+} derive(Eq, @debug.Debug)
+
+pub(all) struct JournalRecord {
+  kind : RecordKind
+  sequence : UInt
+  transaction : UInt
+  payload : Bytes
+} derive(Eq, @debug.Debug)
+pub fn JournalRecord::encoded_size(Self) -> Int
+pub fn JournalRecord::new(RecordKind, UInt, UInt, payload? : Bytes) -> Self
+
+pub(all) struct Mutation {
+  transaction : UInt
+  sequence : UInt
+  kind : MutationKind
+  key : Bytes
+  value : Bytes
+} derive(Eq, @debug.Debug)
+
+pub(all) struct MutationDecode {
+  valid : Bool
+  mutation : Mutation?
+  message : String
+} derive(Eq, @debug.Debug)
+
+pub(all) enum MutationKind {
+  PutValue
+  DeleteKey
+} derive(Eq, @debug.Debug)
+
+pub(all) enum RecordKind {
+  Begin
+  Put
+  Delete
+  Commit
+  Abort
+  Checkpoint
+} derive(Eq, @debug.Debug)
+
+pub(all) struct RecoveryIssue {
+  code : String
+  sequence : UInt
+  transaction : UInt
+  message : String
+} derive(Eq, @debug.Debug)
+
+pub(all) struct RecoveryPlan {
+  actions : Array[Mutation]
+  committed_transactions : Int
+  aborted_transactions : Int
+  incomplete_transactions : Array[UInt]
+  checkpoint_sequence : UInt
+  issues : Array[RecoveryIssue]
+  recoverable : Bool
+} derive(Eq, @debug.Debug)
+pub fn RecoveryPlan::to_json(Self) -> String
+
+pub(all) struct ScanResult {
+  records : Array[JournalRecord]
+  valid_bytes : Int
+  total_bytes : Int
+  stop : ScanStop
+  fault_offset : Int
+  message : String
+} derive(Eq, @debug.Debug)
+pub fn ScanResult::to_json(Self) -> String
+pub fn ScanResult::valid_prefix(Self, BytesView) -> Bytes
+
+pub(all) enum ScanStop {
+  CleanEnd
+  TruncatedTail
+  Corruption
+  UnsupportedVersion
+  SequenceViolation
+  RecordLimit
+} derive(Eq, @debug.Debug)
+
+pub(all) struct SegmentMeta {
+  id : UInt
+  first_sequence : UInt
+  last_sequence : UInt
+  record_count : Int
+  byte_size : Int
+} derive(Eq, @debug.Debug)
+
+pub(all) struct SegmentPlan {
+  segments : Array[SegmentMeta]
+  total_records : Int
+  total_bytes : Int
+  valid : Bool
+  message : String
+} derive(Eq, @debug.Debug)
+
+// Type aliases
+
+// Traits
+
