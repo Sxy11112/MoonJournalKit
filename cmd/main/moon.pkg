@@ -1,0 +1,7 @@
+// import {
+//   "Sxy11112/moonjournalkit" @lib,
+// }
+
+options(
+  "is-main": true,
+)
