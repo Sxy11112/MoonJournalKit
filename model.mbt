@@ -57,3 +57,49 @@ pub(all) struct ScanResult {
   fault_offset : Int
   message : String
 } derive(Debug, Eq)
+
+///|
+/// A committed state change reconstructed from the journal.
+pub(all) enum MutationKind {
+  PutValue
+  DeleteKey
+} derive(Debug, Eq)
+
+///|
+/// One key mutation associated with its transaction and source sequence.
+pub(all) struct Mutation {
+  transaction : UInt
+  sequence : UInt
+  kind : MutationKind
+  key : Bytes
+  value : Bytes
+} derive(Debug, Eq)
+
+///|
+/// Bounded result of decoding a put or delete payload.
+pub(all) struct MutationDecode {
+  valid : Bool
+  mutation : Mutation?
+  message : String
+} derive(Debug, Eq)
+
+///|
+/// A semantic journal problem that does not compromise byte-level framing.
+pub(all) struct RecoveryIssue {
+  code : String
+  sequence : UInt
+  transaction : UInt
+  message : String
+} derive(Debug, Eq)
+
+///|
+/// Deterministic replay plan produced from a trusted record prefix.
+pub(all) struct RecoveryPlan {
+  actions : Array[Mutation]
+  committed_transactions : Int
+  aborted_transactions : Int
+  incomplete_transactions : Array[UInt]
+  checkpoint_sequence : UInt
+  issues : Array[RecoveryIssue]
+  recoverable : Bool
+} derive(Debug, Eq)
