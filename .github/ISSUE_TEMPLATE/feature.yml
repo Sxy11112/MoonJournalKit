@@ -1,0 +1,25 @@
+name: Feature proposal
+description: Propose a journal capability or format evolution
+title: "[Feature] "
+labels: ["enhancement"]
+body:
+  - type: textarea
+    id: use_case
+    attributes:
+      label: Storage use case
+      description: Explain the real system that needs this behavior.
+    validations:
+      required: true
+  - type: textarea
+    id: invariant
+    attributes:
+      label: Required invariant
+      description: State what must remain true across crashes or corruption.
+    validations:
+      required: true
+  - type: textarea
+    id: compatibility
+    attributes:
+      label: MWAL v1 compatibility impact
+    validations:
+      required: true
