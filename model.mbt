@@ -103,3 +103,23 @@ pub(all) struct RecoveryPlan {
   issues : Array[RecoveryIssue]
   recoverable : Bool
 } derive(Debug, Eq)
+
+///|
+/// Immutable metadata for one planned journal segment.
+pub(all) struct SegmentMeta {
+  id : UInt
+  first_sequence : UInt
+  last_sequence : UInt
+  record_count : Int
+  byte_size : Int
+} derive(Debug, Eq)
+
+///|
+/// Result of deterministic journal rotation planning.
+pub(all) struct SegmentPlan {
+  segments : Array[SegmentMeta]
+  total_records : Int
+  total_bytes : Int
+  valid : Bool
+  message : String
+} derive(Debug, Eq)
