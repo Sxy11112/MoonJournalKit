@@ -2,6 +2,4 @@ import {
   "Sxy11112/moonjournalkit" @journal,
 }
 
-options(
-  "is-main": true,
-)
+pkgtype(kind: "executable")

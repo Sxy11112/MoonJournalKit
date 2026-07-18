@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.2.0 - 2026-07-18
+
+- Added bounded `StreamJournalDecoder` for incremental chunk decoding without
+  retaining previously emitted records.
+- Added stream-tail, sequence-violation, and bounded-buffer tests.
+- Updated executable package metadata, README, and OSC 2026 CI gates for the
+  current MoonBit toolchain.
+
 ## 0.1.0 - 2026-07-06
 
 - 定义 MWAL v1 固定头部和六类事务记录

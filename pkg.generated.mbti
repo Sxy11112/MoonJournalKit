@@ -168,6 +168,25 @@ pub(all) struct SegmentPlan {
   message : String
 } derive(Eq, @debug.Debug)
 
+pub(all) struct StreamFeedResult {
+  records : Array[JournalRecord]
+  buffered_bytes : Int
+  stop : ScanStop?
+  message : String
+} derive(Eq, @debug.Debug)
+
+pub(all) struct StreamJournalDecoder {
+  strict_sequence : Bool
+  max_payload : Int
+  max_buffered : Int
+  mut pending : Bytes
+  mut previous_sequence : UInt
+} derive(Eq, @debug.Debug)
+pub fn StreamJournalDecoder::buffered_bytes(Self) -> Int
+pub fn StreamJournalDecoder::feed(Self, BytesView) -> StreamFeedResult
+pub fn StreamJournalDecoder::new(strict_sequence? : Bool, max_payload? : Int, max_buffered? : Int) -> Self
+pub fn StreamJournalDecoder::reset(Self) -> Unit
+
 // Type aliases
 
 // Traits

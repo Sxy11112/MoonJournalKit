@@ -9,18 +9,34 @@ permissions:
   contents: read
 
 jobs:
-  quality:
+  acceptance:
+    name: OSC 2026 acceptance gates
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Install MoonBit
         run: |
           curl -fsSL https://cli.moonbitlang.com/install/unix.sh | bash
           echo "$HOME/.moon/bin" >> "$GITHUB_PATH"
-      - name: Check formatting
-        run: moon fmt --check
-      - name: Check all backends
-        run: moon check --target all
+      - name: moon fmt --deny-warn (compatible)
+        run: |
+          if moon fmt --help | grep -q -- '--deny-warn'; then
+            moon fmt --deny-warn
+          else
+            moon fmt --check
+          fi
+      - name: moon check --deny-warn
+        run: moon check --deny-warn --target all
+      - name: moon info --deny-warn (compatible)
+        run: |
+          if moon info --help | grep -q -- '--deny-warn'; then
+            moon info --deny-warn
+          else
+            moon info
+          fi
+          git diff --exit-code -- '*.mbti'
+      - name: moon test --deny-warn
+        run: moon test --deny-warn --target all
       - name: Inspect publish contents
         run: moon package --list
 
@@ -29,20 +45,20 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        target: [wasm, wasm-gc, js]
+        target: [native, wasm, wasm-gc, js]
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Install MoonBit
         run: |
           curl -fsSL https://cli.moonbitlang.com/install/unix.sh | bash
           echo "$HOME/.moon/bin" >> "$GITHUB_PATH"
       - name: Test ${{ matrix.target }}
-        run: moon test --target "${{ matrix.target }}"
+        run: moon test --deny-warn --target "${{ matrix.target }}"
 
   evidence:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Install MoonBit
         run: |
           curl -fsSL https://cli.moonbitlang.com/install/unix.sh | bash
